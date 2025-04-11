@@ -3,8 +3,8 @@ import pandas as pd
 import os
 from pathlib import Path
 
-# Direktori file Excel
-folder_path = Path("/mnt/data")  # Ganti ke direktori lokal jika perlu
+# Excel file directory
+folder_path = Path("/mnt/data")  # change to the file directory
 excel_files = list(folder_path.glob("*.xlsx"))
 
 all_rows = []
@@ -13,7 +13,7 @@ for file in excel_files:
     try:
         df = pd.read_excel(file, sheet_name='average', header=1)
 
-        # Rename kolom agar lebih rapi
+        # Rename the column 
         df.columns = [str(col).strip() for col in df.columns]
 
         # Ambil kolom yang dibutuhkan
@@ -63,14 +63,14 @@ for file in excel_files:
                             'flag': 'ori'
                         })
     except Exception as e:
-        print(f"❌ Error saat memproses {file.name}: {e}")
+        print(f"Error saat memproses {file.name}: {e}")
 
-# Simpan per level
+# Save the data based on the level of adcp data
 df_all = pd.DataFrame(all_rows)
 if not df_all.empty:
     for level in df_all['level'].unique():
         df_level = df_all[df_all['level'] == level]
         df_level.to_csv(f"output_{level.lower()}.csv", index=False)
-    print("✅ Data berhasil disimpan per level.")
+    print("Data berhasil disimpan per level.")
 else:
-    print("⚠️ Tidak ada data yang berhasil diproses.")
+    print("Tidak ada data yang berhasil diproses.")
